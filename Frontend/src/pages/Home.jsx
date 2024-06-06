@@ -10,7 +10,8 @@ const App = () => {
   useEffect(() => {
     const fetchInitialTasks = async () => {
       try {
-        const taskData = await getTask("Rifqi ");
+        const username = localStorage.getItem("username");
+        const taskData = await getTask(username);
         setTasks(taskData);
       } catch (error) {
         console.error("Error fetching initial tasks:", error);

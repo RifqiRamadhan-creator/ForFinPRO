@@ -13,6 +13,8 @@ const Login = () => {
         const response = await login(username, password);
         if (response.success) {
             alert("Login successful!");
+            localStorage.setItem("username", username);
+            //username localstorage == username input
             navigate("/home"); // Redirect to Home page
         } else {
             alert("Login failed!");

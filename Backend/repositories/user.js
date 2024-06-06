@@ -47,3 +47,20 @@ exports.signup = async function (req, res) {
         res.status(500).send("Internal Server Error");
     }
 };
+
+exports.getNick = async function (req, res){
+    const {username} = req.body;
+    try {
+        const Nick = await pool.query('SELECT nickname FROM user_database WHERE username = $1', [username]);
+        
+        if (Nick.rowCount === 0) {
+            res.json({ nickname: username });
+        } else {
+            res.json({ nickname: Nick.rows[0].nickname });
+        }
+    } catch (error) {
+        // Handle the error
+        console.error(error);
+        res.status(500).json({ error: 'Error retrieving nickname' });
+    }
+}
