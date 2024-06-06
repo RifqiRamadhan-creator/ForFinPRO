@@ -48,7 +48,7 @@ exports.signup = async function (req, res) {
     }
 };
 
-exports.getNick = async function (req, res){
+exports.getNick = async function (req, res){ //function for get nickname, check UserRoutes
     const {username} = req.body;
     try {
         const Nick = await pool.query('SELECT nickname FROM user_database WHERE username = $1', [username]);

@@ -67,3 +67,13 @@ export const getTask = async (username) => {
       throw error; 
     }
   }
+
+  export const getNick = async (username) =>{ //this get nickname. from backend ( check user.js)
+    try {
+          const res = await axios.post('http://localhost:5413/user/nickname', {username: username});
+          return res.data
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      throw error; 
+    }
+  }
