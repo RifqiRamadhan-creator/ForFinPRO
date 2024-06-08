@@ -78,7 +78,17 @@ exports.getPoint = async function (req, res){
         res.status(500).json({ error: 'Error retrieving point' });
     }
 }
+exports.updatePoint = async function (req, res){
+    const {username} = req.body;
 
+    try {
+        const AddPoint = await pool.query("select * from user_task where username = $1 and status = 'Done;", [username]);
+        const point = 0;
+    } catch (error) {
+        
+    }
+    
+}
 exports.getLevel = async function (req, res){
     const {username} = req.body;
     try {
@@ -102,10 +112,7 @@ exports.incrementLevel = async function (req, res) {
             return res.status(404).send("Username not found");
         }
 
-        const user = userResult.rows[0];
-
-        const newLevel = user.level + 1;
-        
+        const user = userResult.rows[0];        
         // Update user level, reset points, and update points needed
         await pool.query(
             'update user_database set level = $1 where username = $2',
