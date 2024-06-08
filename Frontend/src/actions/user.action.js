@@ -108,6 +108,21 @@ export const getTask = async (username) => {
   }
   }
 
+  export const addNote = async ( name, username, text ) => {
+    try {
+      const res = await axios.post('http://localhost:5413/note/addN' , {
+        name: name,
+        username : username ,
+        text : text,
+      });
+      return res.data
+    } catch (error) {
+      console.error('Error Done task:', error);
+    throw error; 
+    }
+
+  }
+
   export const getNote = async( username ) => {
     try {
       const note = await axios.post('http://localhost:5413/note/getN', {username: username});

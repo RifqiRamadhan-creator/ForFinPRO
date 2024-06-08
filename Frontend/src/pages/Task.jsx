@@ -6,7 +6,6 @@ import { Button, MenuItem, Select, TextField } from "@mui/material";
 const App = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({
-    username: "",
     name: "",
     category: "",
     status: "", // Set default status
@@ -42,13 +41,13 @@ const App = () => {
     }
   };
 
-  const handleAddTask = async (e) => {
-    e.preventDefault();
+  const handleAddTask = async () => {
     try {
-      await addTask(newTask);
+      const username = localStorage.getItem("username");
+      const taskWithUsername = { ...newTask, username };
+      await addTask(taskWithUsername);
       await handleFetchTasks();
       setNewTask({
-        username: "",
         name: "",
         category: "",
         status: "", // Reset status to default after adding task
@@ -66,7 +65,6 @@ const App = () => {
       await delTask({ name: taskName });
       await handleFetchTasks();
       setNewTask({
-        username: "",
         name: "",
         category: "",
         status: "", // Reset status to default after adding task
@@ -104,20 +102,21 @@ const App = () => {
     window.location.reload();
   };
 
-  const AddthenReload = async (e) => {
-    await handleAddTask(e);
+  const AddthenReload = async () => {
+    await handleAddTask();
     Reload();
   };
 
   const HandlebackHome = () => {
     navigate("/Home");
   };
+
   const HandleNotes = () => {
     navigate("/NoteHome");
-  }
+  };
 
-  const DelthenReload = async (e) => {
-    await handleDeleteTask(e);
+  const DelthenReload = async (taskName) => {
+    await handleDeleteTask(taskName);
     await handleFetchTasks();
   };
 
@@ -166,11 +165,11 @@ const App = () => {
                 >
                   Delete
                 </Button>
-                {task.category === "Study" && (
+                {task.category === "Study" && task.status !== "Done" && task.status !== "Overdue" && (
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick = {HandleNotes}
+                    onClick={HandleNotes}
                     style={styles.notesButton}
                   >
                     Notes
@@ -198,14 +197,6 @@ const App = () => {
         </div>
         <div style={styles.addTaskForm}>
           <h2>Add New Task</h2>
-          <TextField
-            type="text"
-            placeholder="Username"
-            value={newTask.username}
-            onChange={(e) => setNewTask({ ...newTask, username: e.target.value })}
-            style={styles.input}
-            fullWidth
-          />
           <TextField
             type="text"
             placeholder="Name"
@@ -241,130 +232,130 @@ const App = () => {
             fullWidth
           />
           <Select // Use Select for dropdown menu
-            label="Priority"
-            value={newTask.priority}
-            onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
-            style={styles.input}
-            fullWidth
-          >
-            <MenuItem value="Urgent">Urgent</MenuItem>
-            <MenuItem value="Standard">Standard</MenuItem>
-            <MenuItem value="Relax">Relax</MenuItem>
-          </Select>
-          <TextField
-            placeholder="Note"
-            value={newTask.note}
-            onChange={(e) => setNewTask({ ...newTask, note: e.target.value })}
-            style={styles.textarea}
-            fullWidth
-            multiline
-            rows={4}
-          />
-          <Button variant="contained" onClick={AddthenReload} fullWidth style={styles.button}>
-            Add Task
-          </Button>
-
-        </div>
-      </div>
-    </div>
-  );
+           
+           label="Priority"
+           value={newTask.priority}
+           onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
+           style={styles.input}
+           fullWidth
+         >
+           <MenuItem value="Urgent">Urgent</MenuItem>
+           <MenuItem value="Standard">Standard</MenuItem>
+           <MenuItem value="Relax">Relax</MenuItem>
+         </Select>
+         <TextField
+           placeholder="Note"
+           value={newTask.note}
+           onChange={(e) => setNewTask({ ...newTask, note: e.target.value })}
+           style={styles.textarea}
+           fullWidth
+           multiline
+           rows={4}
+         />
+         <Button variant="contained" onClick={AddthenReload} fullWidth style={styles.button}>
+           Add Task
+         </Button>
+       </div>
+     </div>
+   </div>
+ );
 };
 
 const styles = {
-  app: {
-    fontFamily: "Arial, sans-serif",
-    display: "flex",
-    flexDirection: "column",
-    height: "100vh",
-    width: "100vw",
-    margin: "0",
-    padding: "0",
-    overflow: "hidden", // Ensure the whole app doesn't overflow
-  },
-  navbar: {
-    backgroundColor: "#282c34",
-    padding: "1rem",
-    color: "white",
-    flexShrink: "0",
-  },
-  navbarContent: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
-  },
-  homeButton: {
-    position: "absolute",
-    left: "1rem",
-  },
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    flex: "1",
-    padding: "2rem",
-    overflow: "hidden", // Ensure the container doesn't overflow
-  },
-  taskContainer: {
-    flex: "2",
-    padding: "1rem",
-    overflowY: "auto", // Allow vertical scrolling
-    borderRight: "1px solid #ccc",
-    height: "100%",
-  },
-  taskCard: {
-    border: "1px solid #ccc",
-    padding: "1rem",
-    margin: "1rem 0",
-    position: "relative",
-  },
-  deleteButton: {
-    position: "absolute",
-    top: "1rem",
-    right: "1rem",
-  },
-  notesButton: {
-    position: "absolute",
-    top: "3rem",
-    right: "1rem",
-  },
-  doneButton: {
-    position: "absolute",
-    top: "5rem",
-    right: "1rem",
-  },
-  startButton: {
-    position: "absolute",
-    top: "7rem",
-    right: "1rem",
-  },
-  addTaskForm: {
-    flex: "1",
-    padding: "1rem",
-    overflowY: "auto", // Allow vertical scrolling
-    height: "100%",
-  },
-  input: {
-    display: "block",
-    width: "100%",
-    padding: "0.5rem",
-    margin: "0.5rem 0",
-  },
-  textarea: {
-    display: "block",
-    width: "100%",
-    padding: "0.5rem",
-    margin: "0.5rem 0",
-  },
-  button: {
-    padding: "0.5rem 1rem",
-    backgroundColor: "#282c34",
-    color: "white",
-    border: "none",
-    cursor: "pointer",
-  },
-  buttonHover: {
-    backgroundColor: "#61dafb",
-  },
+ app: {
+   fontFamily: "Arial, sans-serif",
+   display: "flex",
+   flexDirection: "column",
+   height: "100vh",
+   width: "100vw",
+   margin: "0",
+   padding: "0",
+   overflow: "hidden", // Ensure the whole app doesn't overflow
+ },
+ navbar: {
+   backgroundColor: "#282c34",
+   padding: "1rem",
+   color: "white",
+   flexShrink: "0",
+ },
+ navbarContent: {
+   display: "flex",
+   justifyContent: "center",
+   alignItems: "center",
+   position: "relative",
+ },
+ homeButton: {
+   position: "absolute",
+   left: "1rem",
+ },
+ container: {
+   display: "flex",
+   flexDirection: "row",
+   flex: "1",
+   padding: "2rem",
+   overflow: "hidden", // Ensure the container doesn't overflow
+ },
+ taskContainer: {
+   flex: "2",
+   padding: "1rem",
+   overflowY: "auto", // Allow vertical scrolling
+   borderRight: "1px solid #ccc",
+   height: "100%",
+ },
+ taskCard: {
+   border: "1px solid #ccc",
+   padding: "1rem",
+   margin: "1rem 0",
+   position: "relative",
+ },
+ deleteButton: {
+   position: "absolute",
+   top: "1rem",
+   right: "1rem",
+ },
+ notesButton: {
+   position: "absolute",
+   top: "3rem",
+   right: "1rem",
+ },
+ doneButton: {
+   position: "absolute",
+   top: "5rem",
+   right: "1rem",
+ },
+ startButton: {
+   position: "absolute",
+   top: "7rem",
+   right: "1rem",
+ },
+ addTaskForm: {
+   flex: "1",
+   padding: "1rem",
+   overflowY: "auto", // Allow vertical scrolling
+   height: "100%",
+ },
+ input: {
+   display: "block",
+   width: "100%",
+   padding: "0.5rem",
+   margin: "0.5rem 0",
+ },
+ textarea: {
+   display: "block",
+   width: "100%",
+   padding: "0.5rem",
+   margin: "0.5rem 0",
+ },
+ button: {
+   padding: "0.5rem 1rem",
+   backgroundColor: "#282c34",
+   color: "white",
+   border: "none",
+   cursor: "pointer",
+ },
+ buttonHover: {
+   backgroundColor: "#61dafb",
+ },
 };
 
 export default App;

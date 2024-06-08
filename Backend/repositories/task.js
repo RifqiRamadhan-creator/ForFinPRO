@@ -24,7 +24,7 @@ exports.getTask = async function (req, res) {
     const { username } = req.body;
     try {
         const AllTask = await pool.query(
-            "select * from user_task where username = $1 order by deadline ASC",
+            "SELECT * FROM user_task WHERE username = $1 ORDER BY deadline ASC, CASE WHEN status = 'In-progress' THEN 1 WHEN status = 'Completed' THEN 2 WHEN status = 'Done' THEN 3 WHEN status = 'Overdue' THEN 4 ELSE 5 END",
             [username]
           );
         if (AllTask.rows.length === 0) {
