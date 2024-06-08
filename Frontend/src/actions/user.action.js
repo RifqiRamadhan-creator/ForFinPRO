@@ -77,3 +77,43 @@ export const getTask = async (username) => {
       throw error; 
     }
   }
+
+  export const updateT = async ( username, name) => {
+    try {
+        const res = await axios.post('http://localhost:5413/task/updT', {username: username, name: name});
+        return res.data
+    } catch (error) {
+      console.error('Error updating task:', error);
+      throw error; 
+    }
+  }
+
+  export const doneT = async ( username, name) => {
+    try {
+        const res = await axios.post('http://localhost:5413/task/doneT', {username: username, name: name});
+        return res.data
+    } catch (error) {
+      console.error('Error Done task:', error);
+      throw error; 
+    }
+  }
+  
+  export const startT = async (username, name ) => {
+    try {
+      const res = await axios.post('http://localhost:5413/task/startT', {username: username, name: name});
+      return res.data
+  } catch (error) {
+    console.error('Error Done task:', error);
+    throw error; 
+  }
+  }
+
+  export const getNote = async( username ) => {
+    try {
+      const note = await axios.post('http://localhost:5413/note/getN', {username: username});
+      return note.data
+    } catch (error) {
+      console.error('Error Done task:', error);
+    throw error;
+    }
+  }

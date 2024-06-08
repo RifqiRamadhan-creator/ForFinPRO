@@ -1,7 +1,7 @@
 const { pool } = require("../config/db.config.js");
 
 const getOwnedPets = async (req, res) => {
-    const { username } = req.query;
+    const { username } = req.body;
 
     try {
         const result = await pool.query(
@@ -24,7 +24,7 @@ const getOwnedPets = async (req, res) => {
     }
 };
 const getAllPets = async (req, res) => { 
-    const { username } = req.query;
+    const { username } = req.body;
 
     try { 
         const result = await pool.query( 
@@ -49,7 +49,7 @@ const getAllPets = async (req, res) => {
 };
 
 const getMyNewestPet = async (req, res) => { 
-    const { username } = req.query;
+    const { username } = req.body;
 
     try { 
         const result = await pool.query( 

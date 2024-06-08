@@ -8,36 +8,15 @@ const {pool} = require('./config/db.config');
 const port = process.env.PORT; 
 const app = express(); 
 const cors = require('cors');
-const userController = require("./repositories/user.js");
-const taskController = require("./repositories/task.js");
-const noteController = require("./repositories/note.js");
-const petController = require("./repositories/repository.pet.js");
+
 
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-app.use('/user', userRoutes);
-app.use('/task', TaskRoutes);
-app.use('/note', NoteRoutes);
-app.use('/pet', PetRoutes);
-
-//users
-app.post("/login", userController.login);
-app.post("/signup", userController.signup);
-app.post("/nickname", userController.getNick); //this get nickname
-
-//Tasks
-app.post("/addT", taskController.addTask);
-app.post("/getT", taskController.getTask);
-app.post("/delT", taskController.delTask);
-//Notes
-app.post("/addN", noteController.addNotes);
-app.post("/getN",noteController.getNotes);
-//Pets
-app.post("/getOwnedP",petController.getOwnedPets);
-app.post("/getAllP",petController.getAllPets);
-app.post("/getNewP", petController.getMyNewestPet);
-
+app.use('/user', userRoutes); //connect /user to all user - centric backend
+app.use('/task', TaskRoutes); //connect /task to all task - centric backend
+app.use('/note', NoteRoutes); //connect /note to all note - centric backend
+app.use('/pet', PetRoutes); //connect /pet to all pet - centric backend
 
 
 pool.connect(() => {
