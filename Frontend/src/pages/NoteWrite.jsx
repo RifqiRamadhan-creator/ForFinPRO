@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Typography, Card, CardContent, AppBar, Toolbar } from '@mui/material';
+import { Button, Typography, Card, CardContent, AppBar, Toolbar } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { getNote } from '../actions/user.action';
+import { getNote } from '../actions/note.action';
+import Navbar from '../components/Navbar';
 
 const NoteWrite = () => {
   const [notes, setNotes] = useState([]);
@@ -28,13 +29,9 @@ const NoteWrite = () => {
 
   return (
     <div>
-      <AppBar position="static">
-        <Toolbar>
-          <Button color="inherit" component={Link} to="/Home">
-            Home
-          </Button>
-        </Toolbar>
-      </AppBar>
+      {/* Navbar */}
+      <Navbar style={styles.navbar} />
+      
       <div style={styles.container}>
         {error ? (
           <Typography color="error">{error}</Typography>
@@ -56,7 +53,11 @@ const NoteWrite = () => {
 };
 
 const styles = {
+  navbar: {
+    paddingBottom: '1rem', // Adding padding to the bottom of the navbar
+  },
   container: {
+    paddingTop: "5rem",
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

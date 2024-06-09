@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
+import Navbar from "../components/Navbar.jsx";
 import { useNavigate } from "react-router-dom";
-import { getTask, getNick, getNote } from "../actions/user.action";
+import { profile } from "../actions/user.action";
+import { getTask } from "../actions/task.action";
+import { getNote } from "../actions/note.action";
 import { myNewestPet } from "../actions/pet.action";
-import petImageMapping from "../actions/pet.images";
+import petImageMapping from "../images/pet.images";
 import { Button, Card, CardContent, Typography } from "@mui/material";
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
-  const [nickname, setNickname] = useState("");
+  const [user, setUser] = useState("");
   const [newestPet, setNewestPet] = useState([]);
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,16 +25,13 @@ const App = () => {
         const taskData = await getTask(username);
         setTasks(taskData);
 
-        const nicknameData = await getNick(username);
-        setNickname(nicknameData.nickname);
+        const userRes = await profile(username);
+        setUser(userRes.data);
 
         const petResponse = await myNewestPet(username);
         if (petResponse.success) {
           setNewestPet(petResponse.data);
-        } else {
-          setError("Failed to fetch my newest pet");
         }
-
         const noteResponse = await getNote(username);
         setNotes(noteResponse);
 
@@ -67,18 +67,13 @@ const App = () => {
 
   return (
     <div style={styles.app}>
-      <nav style={styles.navbar}>
-        <div style={styles.navbarContent}>
-          <span>{new Date().toLocaleDateString()}</span>
-          <span>Good Morning {nickname}</span>
-        </div>
-      </nav>
+      <Navbar />
       <div style={styles.container}>
         <div style={styles.cardContainer}>
           <Card style={{ ...styles.card, ...styles.taskCard }}>
             <CardContent>
               <Typography variant="h5" component="h2" gutterBottom>
-                Tasks for {nickname}
+                Tasks for {user.nickname}
               </Typography>
               {tasks.length > 0 ? (
                 <div>
@@ -172,22 +167,13 @@ const styles = {
     margin: "0",
     padding: "0",
   },
-  navbar: {
-    backgroundColor: "#282c34",
-    padding: "1rem",
-    color: "white",
-    flexShrink: "0",
-  },
-  navbarContent: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
   container: {
     display: "flex",
     flexDirection: "row",
     flex: "1",
     padding: "2rem",
     overflow: "hidden",
+    paddingTop: "90px",
   },
   cardContainer: {
     display: "flex",
@@ -231,4 +217,3 @@ const styles = {
 };
 
 export default App;
-

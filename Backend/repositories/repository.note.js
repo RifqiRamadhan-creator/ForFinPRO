@@ -1,7 +1,7 @@
 const { pool } = require("../config/db.config.js");
 const { v4: uuidv4 } = require('uuid');
 
-
+//Add a new notes function
 exports.addNotes = async function (req, res){
     const {name, username, text} = req.body;
 
@@ -19,9 +19,9 @@ exports.addNotes = async function (req, res){
         console.error(error);
         res.status(500).send("Internal Server Error");
     }
-}
+};
 
-//get all Notes Function
+//Get all notes function
 exports.getNotes = async function (req, res){
     const {username} = req.body;
 
@@ -37,8 +37,9 @@ exports.getNotes = async function (req, res){
         console.error(error);
         res.status(500).send("Internal Server Error");
     }
-}
+};
 
+//Get a specific note by id
 exports.getNotesSpecific = async function (req, res){
     const {username, id } = req.body;
 
@@ -54,4 +55,4 @@ exports.getNotesSpecific = async function (req, res){
         console.error(error);
         res.status(500).send("Internal Server Error");
     }
-}
+};

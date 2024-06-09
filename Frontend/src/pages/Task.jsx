@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
+import Navbar from "../components/Navbar.jsx";
 import { useNavigate } from "react-router-dom";
-import { getTask, addTask, delTask, updateT, doneT, startT } from "../actions/user.action";
+import { UpdateOwnedPet } from "../actions/pet.action";
+import { updatePoint, incrementLevel } from "../actions/user.action";
+import { getTask, addTask, delTask, updateT, doneT, startT } from "../actions/task.action";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
 
 const App = () => {
@@ -72,7 +75,7 @@ const App = () => {
         priority: "Standard",
         note: ""
       });   
-     } catch (error) {
+    } catch (error) {
       console.error("Error deleting task:", error);
     }
   };
@@ -81,6 +84,9 @@ const App = () => {
     try {
       const username = localStorage.getItem("username");
       await doneT(username, taskName);
+      await updatePoint(username);
+      await incrementLevel(username);
+      await UpdateOwnedPet(username);
       await handleFetchTasks();
     } catch (error) {
       console.error("Error Finishing Task", error);
@@ -134,15 +140,7 @@ const App = () => {
 
   return (
     <div style={styles.app}>
-      <nav style={styles.navbar}>
-        <div style={styles.navbarContent}>
-          <Button variant="contained" onClick={HandlebackHome} style={styles.homeButton}>
-            Home
-          </Button>
-          <span>{today}</span>
-          <span>Good Morning Anisa</span>
-        </div>
-      </nav>
+      <Navbar style={styles.navbar} />
       <div style={styles.container}>
         <div style={styles.taskContainer}>
           <h2>Tasks for Rifqi</h2>
@@ -175,6 +173,7 @@ const App = () => {
                     Notes
                   </Button>
                 )}
+                {task.status !== "Done" && task.status !== "Overdue" && (
                 <Button
                   variant="contained"
                   color="success"
@@ -183,6 +182,8 @@ const App = () => {
                 >
                   Done
                 </Button>
+                )}
+                {task.status === "Completed" && (
                 <Button
                   variant="contained"
                   color="inherit"
@@ -191,6 +192,7 @@ const App = () => {
                 >
                   Start
                 </Button>
+                )}
               </div>
             ))
           )}
@@ -205,14 +207,15 @@ const App = () => {
             style={styles.input}
             fullWidth
           />
-          <TextField
-            type="text"
-            placeholder="Category"
-            value={newTask.category}
-            onChange={(e) => setNewTask({ ...newTask, category: e.target.value })}
-            style={styles.input}
-            fullWidth
-          />
+         <Select // Use Select for dropdown menu
+  value={newTask.category}
+  onChange={(e) => setNewTask({ ...newTask, category: e.target.value })}
+  style={styles.input}
+  fullWidth
+>
+  <MenuItem value="Study">Study</MenuItem>
+  <MenuItem value="Other">Other</MenuItem>
+</Select>
           <Select // Use Select for dropdown menu
             label="Status"
             value={newTask.status}
@@ -262,100 +265,88 @@ const App = () => {
 };
 
 const styles = {
- app: {
-   fontFamily: "Arial, sans-serif",
-   display: "flex",
-   flexDirection: "column",
-   height: "100vh",
-   width: "100vw",
-   margin: "0",
-   padding: "0",
-   overflow: "hidden", // Ensure the whole app doesn't overflow
- },
- navbar: {
-   backgroundColor: "#282c34",
-   padding: "1rem",
-   color: "white",
-   flexShrink: "0",
- },
- navbarContent: {
-   display: "flex",
-   justifyContent: "center",
-   alignItems: "center",
-   position: "relative",
- },
- homeButton: {
-   position: "absolute",
-   left: "1rem",
- },
- container: {
-   display: "flex",
-   flexDirection: "row",
-   flex: "1",
-   padding: "2rem",
-   overflow: "hidden", // Ensure the container doesn't overflow
- },
- taskContainer: {
-   flex: "2",
-   padding: "1rem",
-   overflowY: "auto", // Allow vertical scrolling
-   borderRight: "1px solid #ccc",
-   height: "100%",
- },
- taskCard: {
-   border: "1px solid #ccc",
-   padding: "1rem",
-   margin: "1rem 0",
-   position: "relative",
- },
- deleteButton: {
-   position: "absolute",
-   top: "1rem",
-   right: "1rem",
- },
- notesButton: {
-   position: "absolute",
-   top: "3rem",
-   right: "1rem",
- },
- doneButton: {
-   position: "absolute",
-   top: "5rem",
-   right: "1rem",
- },
- startButton: {
-   position: "absolute",
-   top: "7rem",
-   right: "1rem",
- },
- addTaskForm: {
-   flex: "1",
-   padding: "1rem",
-   overflowY: "auto", // Allow vertical scrolling
-   height: "100%",
- },
- input: {
-   display: "block",
-   width: "100%",
-   padding: "0.5rem",
-   margin: "0.5rem 0",
- },
- textarea: {
-   display: "block",
-   width: "100%",
-   padding: "0.5rem",
-   margin: "0.5rem 0",
- },
- button: {
-   padding: "0.5rem 1rem",
-   backgroundColor: "#282c34",
-   color: "white",
-   border: "none",
-   cursor: "pointer",
- },
- buttonHover: {
-   backgroundColor: "#61dafb",
- },
+  app: {
+    fontFamily: "Arial, sans-serif",
+    display: "flex",
+    flexDirection: "column",
+    height: "100vh",
+    width: "100vw",
+    margin: "0",
+    padding: "0",
+    overflow: "hidden", // Ensure the whole app doesn't overflow
+  },
+  navbar: {
+    height: "40px", // Adjusted height to make the navbar smaller
+  },
+  container: {
+    display: "flex",
+    flexDirection: "row",
+    flex: "1",
+    padding: "2rem",
+    overflow: "hidden", // Ensure the container doesn't overflow
+  },
+  taskContainer: {
+    flex: "2",
+    padding: "1rem",
+    overflowY: "auto", // Allow vertical scrolling
+    borderRight: "1px solid #ccc",
+    marginTop: "50px", // Adjusted margin to push the container below the navbar
+    height: "calc(100% - 50px)", // Adjusted height to utilize remaining space
+  },
+  taskCard: {
+    border: "1px solid #ccc",
+    padding: "1rem",
+    margin: "1rem 0",
+    position: "relative",
+  },
+  deleteButton: {
+    position: "absolute",
+    top: "1rem",
+    right: "1rem",
+  },
+  notesButton: {
+    position: "absolute",
+    top: "3rem",
+    right: "1rem",
+  },
+  doneButton: {
+    position: "absolute",
+    top: "5rem",
+    right: "1rem",
+  },
+  startButton: {
+    position: "absolute",
+    top: "7rem",
+    right: "1rem",
+  },
+  addTaskForm: {
+    flex: "1",
+    padding: "1rem",
+    overflowY: "auto", // Allow vertical scrolling
+    height: "100%",
+  },
+  input: {
+    display: "block",
+    width: "100%",
+    padding: "0.5rem",
+    margin: "0.5rem 0",
+  },
+  textarea: {
+    display: "block",
+    width: "100%",
+    padding: "0.5rem",
+    margin: "0.5rem 0",
+  },
+  button: {
+    padding: "0.5rem 1rem",
+    backgroundColor: "#282c34",
+    color: "white",
+    border: "none",
+    cursor: "pointer",
+  },
+  buttonHover: {
+    backgroundColor: "#61dafb",
+  },
 };
 
 export default App;

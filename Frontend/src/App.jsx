@@ -6,6 +6,7 @@ import Task from "./pages/Task";
 import Home from "./pages/Home";
 import Note from "./pages/Note";
 import Pet from "./pages/Pet";
+import Profile from "./pages/Profile";
 import NoteWrite from "./pages/NoteWrite";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
             <Route path="/NoteHome" element={<Note />} />
             <Route path ="/NoteWrite" element={<NoteWrite />} />
             <Route path ="/Pet" element={<Pet />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </div>
       </div>

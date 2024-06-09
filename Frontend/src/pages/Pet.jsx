@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { allPets, ownedPets } from "../actions/pet.action";
-import petImageMapping from "../actions/pet.images";
+import petImageMapping from "../images/pet.images";
 import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
-import '../index.css';
+import Navbar from "../components/Navbar";
 
 const MyPets = () => {
     const [allPetsList, setAllPetsList] = useState([]);
@@ -33,7 +33,6 @@ const MyPets = () => {
             setLoading(false);
         };
         
-        // Fetch both all pets and my pets
         Promise.all([fetchAllPets(), fetchMyPets()])
             .catch((error) => {
                 setError("Failed to fetch pets");
@@ -50,53 +49,46 @@ const MyPets = () => {
     }
 
     return (
-        <div>
-            {/* Navigation bar */}
-            <nav style={styles.navbar}>
-                <div style={styles.navbarContent}>
-                    <Link to="/Home">
-                        <Button variant="contained" color="primary">Home</Button>
-                    </Link>
-                </div>
-            </nav>
+        <div style={styles.container}>
 
-            <p className="p-4 text-3xl font-bold">
-                My Pets 
-            </p>
-            <div className="p-4 grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-8">
-                {myPetsList.map((pet) => (
-                    <div key={pet.id} className="overflow-hidden flex flex-col items-center">
-                        <img className="h-50" src={petImageMapping[pet.pet_avatar]} alt={pet.name} />
-                        <p>{pet.name}</p>
-                    </div>
-                ))}
-            </div>
-            <p className="p-4 text-3xl font-bold">
-                Not Owned
-            </p>
-            <div className="p-4 grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-8">
-                {allPetsList.map((pet) => (
-                    <div className="overflow-hidden flex flex-col items-center">
-                        <img className="h-50 blackout" src={petImageMapping[pet.pet_avatar]} alt={pet.name} />
-                        <p>???</p>
-                    </div>
-                ))}
+            <Navbar style={styles.navbar} />
+
+            <div style={styles.content}>
+                <p className="p-4 text-3xl font-bold">
+                    My Pets 
+                </p>
+                <div className="p-4 grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-8">
+                    {myPetsList.map((pet) => (
+                        <div key={pet.id} className="overflow-hidden flex flex-col items-center">
+                            <img className="h-50" src={petImageMapping[pet.pet_avatar]} alt={pet.name} />
+                            <p>{pet.name}</p>
+                        </div>
+                    ))}
+                </div>
+                <p className="p-4 text-3xl font-bold">
+                    Not Owned
+                </p>
+                <div className="p-4 grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-8">
+                    {allPetsList.map((pet) => (
+                        <div className="overflow-hidden flex flex-col items-center">
+                            <img className="h-50 blackout" src={petImageMapping[pet.pet_avatar]} alt={pet.name} />
+                            <p>???</p>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
 };
 
 const styles = {
-  navbar: {
-    backgroundColor: "#282c34",
-    padding: "1rem",
-    color: "white",
-    flexShrink: "0",
-  },
-  navbarContent: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
+    container: {
+        paddingTop: "4rem", },
+    navbar: {
+        paddingBottom: "0.5rem", },
+    content: {
+        padding: "0 2rem", 
+    },
 };
 
 export default MyPets;

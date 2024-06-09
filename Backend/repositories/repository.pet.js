@@ -1,6 +1,8 @@
 const { pool } = require("../config/db.config.js");
-const { getLevel } = require("./user.js");
-const getOwnedPets = async (req, res) => {
+const { v4: uuidv4 } = require('uuid');
+
+//Get user's owned pets
+exports.getOwnedPets = async function (req, res){
     const { username } = req.body;
 
     try {
@@ -23,7 +25,9 @@ const getOwnedPets = async (req, res) => {
         });
     }
 };
-const UpdateOwnedPet = async (req, res) => {
+
+//Updating user's owned pet
+exports.UpdateOwnedPet = async function (req, res){
     // Extract username from request body
     const { username } = req.body;
 
@@ -82,7 +86,9 @@ const UpdateOwnedPet = async (req, res) => {
         res.status(500).send({ err: error.message });
     }
 };
-const getAllPets = async (req, res) => { 
+
+//Get user's not owned pet
+exports.getAllPets = async function (req, res) { 
     const { username } = req.body;
 
     try { 
@@ -107,7 +113,8 @@ const getAllPets = async (req, res) => {
     } 
 };
 
-const getMyNewestPet = async (req, res) => { 
+//Get user's newest pet
+exports.getMyNewestPet = async function (req, res) { 
     const { username } = req.body;
 
     try { 
@@ -132,15 +139,4 @@ const getMyNewestPet = async (req, res) => {
         }); 
     } 
     
-};
-
-
-
-
-
-module.exports = { 
-    getAllPets,
-    getOwnedPets,
-    getMyNewestPet,
-    UpdateOwnedPet,
 };
